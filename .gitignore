@@ -8,7 +8,7 @@
 .buildlog/
 .history
 .svn/
-./annotation.txt
+/annotation.txt
 
 # IntelliJ related
 *.iml

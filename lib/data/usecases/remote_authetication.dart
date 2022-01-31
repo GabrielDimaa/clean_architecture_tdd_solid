@@ -15,6 +15,8 @@ class RemoteAuthentication implements Authentication {
     try {
       final Map? response = await httpClient.request(url: url, method: "post", body: RemoteAutheticationParams.fromDomain(params).toJson());
 
+      if (response == null) throw HttpError.invalidData;
+
       return RemoteAccountModel.fromJson(response).toEntity();
     } on HttpError catch (error) {
       throw error == HttpError.unauthorized ? DomainError.invalidCredentials : DomainError.unexpected;
