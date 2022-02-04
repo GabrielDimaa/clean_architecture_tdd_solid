@@ -9,7 +9,7 @@ class EmailInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final LoginPresenter presenter = Provider.of<LoginPresenter>(context);
 
-    return StreamBuilder<String>(
+    return StreamBuilder<String?>(
       stream: presenter.emailErrorStream,
       builder: (context, snapshot) {
         return TextFormField(

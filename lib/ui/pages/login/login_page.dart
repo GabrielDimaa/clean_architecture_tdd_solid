@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          widget.presenter?.loadingStream.listen((loading) {
+          widget.presenter?.loadingStream?.listen((loading) {
             if (loading) {
               showLoading(context);
             } else {
@@ -31,8 +31,10 @@ class _LoginPageState extends State<LoginPage> {
             }
           });
 
-          widget.presenter?.mainErrorStream.listen((error) {
-            showErrorMessage(context, error);
+          widget.presenter?.mainErrorStream?.listen((error) {
+            if (error != null) {
+              showErrorMessage(context, error);
+            }
           });
 
           return SingleChildScrollView(

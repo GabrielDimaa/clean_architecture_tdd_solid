@@ -13,7 +13,7 @@ void main() {
   late RemoteAuthentication sut;
   late HttpClientSpy httpClient;
   late String url;
-  late AutheticationParams params;
+  late AuthenticationParams params;
 
   Map mockValidData() => {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
 
@@ -31,7 +31,7 @@ void main() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteAuthentication(httpClient: httpClient, url: url);
-    params = AutheticationParams(email: faker.internet.email(), password: faker.internet.password());
+    params = AuthenticationParams(email: faker.internet.email(), password: faker.internet.password());
     mockHttpData(mockValidData());
   });
 
