@@ -3,7 +3,14 @@ import 'package:clean_architecture_tdd_solid/main/factories/usecases/authenticat
 import 'package:clean_architecture_tdd_solid/presentation/presenter/stream_login_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/login_presenter.dart';
 
-LoginPresenter makeLoginPresenter() {
+LoginPresenter makeStreamLoginPresenter() {
+  return StreamLoginPresenter(
+    authentication: makeRemoteAuthentication(),
+    validation: makeLoginValidation(),
+  );
+}
+
+LoginPresenter makeGetxLoginPresenter() {
   return StreamLoginPresenter(
     authentication: makeRemoteAuthentication(),
     validation: makeLoginValidation(),

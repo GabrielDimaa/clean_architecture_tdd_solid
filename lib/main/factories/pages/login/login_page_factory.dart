@@ -3,5 +3,5 @@ import 'package:clean_architecture_tdd_solid/ui/pages/login/login_page.dart';
 import 'package:flutter/material.dart';
 
 Widget makeLoginPage() {
-  return LoginPage(presenter: makeLoginPresenter());
+  return LoginPage(presenter: makeGetxLoginPresenter());
 }
