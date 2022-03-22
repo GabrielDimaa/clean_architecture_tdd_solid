@@ -1,10 +1,11 @@
 import 'package:clean_architecture_tdd_solid/validation/dependencies/field_validation.dart';
+import 'package:equatable/equatable.dart';
 
-class RequiredFieldValidation implements FieldValidation {
+class RequiredFieldValidation extends Equatable implements FieldValidation {
   @override
   final String field;
 
-  RequiredFieldValidation(this.field);
+  const RequiredFieldValidation(this.field);
 
   @override
   String? validate(String? value) {
@@ -14,4 +15,7 @@ class RequiredFieldValidation implements FieldValidation {
 
     return null;
   }
+
+  @override
+  List<Object?> get props => [field];
 }

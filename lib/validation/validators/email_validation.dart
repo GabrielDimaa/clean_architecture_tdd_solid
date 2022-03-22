@@ -1,10 +1,11 @@
 import 'package:clean_architecture_tdd_solid/validation/dependencies/field_validation.dart';
+import 'package:equatable/equatable.dart';
 
-class EmailValidation implements FieldValidation {
+class EmailValidation extends Equatable implements FieldValidation {
   @override
   final String field;
 
-  EmailValidation(this.field);
+  const EmailValidation(this.field);
 
   @override
   String? validate(String? value) {
@@ -14,4 +15,7 @@ class EmailValidation implements FieldValidation {
 
     return isValid ? null : "Campo inválido.";
   }
+
+  @override
+  List<Object?> get props => [field];
 }
