@@ -7,13 +7,13 @@ class ValidationComposite implements Validation {
   ValidationComposite(this.validations);
 
   @override
-  String? validate(String field, String value) {
-    String? error;
+  ValidationError? validate(String field, String value) {
+    ValidationError? error;
 
     for (var e in validations.where((e) => e.field == field)) {
       error = e.validate(value);
 
-      if (error?.isNotEmpty ?? false) {
+      if (error != null) {
         return error;
       }
     }

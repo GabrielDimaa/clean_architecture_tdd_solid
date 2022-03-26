@@ -1,3 +1,8 @@
 abstract class Validation {
-  String? validate(String field, String value);
+  ValidationError? validate(String field, String value);
+}
+
+enum ValidationError {
+  requiredField,
+  invalidField
 }

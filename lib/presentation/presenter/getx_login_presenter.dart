@@ -8,6 +8,7 @@ import 'package:clean_architecture_tdd_solid/ui/pages/login/login_presenter.dart
 import 'package:get/get.dart';
 
 import '../../domain/entities/account_entity.dart';
+import '../../ui/helpers/errors/ui_error.dart';
 
 class GetxLoginPresenter extends GetxController implements LoginPresenter {
   final Validation validation;
@@ -19,21 +20,21 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   String? _email;
   String? _password;
 
-  final RxnString _emailError = RxnString();
-  final RxnString _passwordError = RxnString();
-  final RxnString _mainError = RxnString();
+  final Rxn<UIError> _emailError = Rxn<UIError>();
+  final Rxn<UIError> _passwordError = Rxn<UIError>();
+  final Rxn<UIError> _mainError = Rxn<UIError>();
   final RxBool _formValid = false.obs;
   final RxBool _loading = false.obs;
   final RxnString _navigateToStream = RxnString();
 
   @override
-  Stream<String?>? get emailErrorStream => _emailError.stream;
+  Stream<UIError?>? get emailErrorStream => _emailError.stream;
 
   @override
-  Stream<String?>? get passwordErrorStream => _passwordError.stream;
+  Stream<UIError?>? get passwordErrorStream => _passwordError.stream;
 
   @override
-  Stream<String?>? get mainErrorStream => _mainError.stream;
+  Stream<UIError?>? get mainErrorStream => _mainError.stream;
 
   @override
   Stream<bool>? get formValidStream => _formValid.stream;
@@ -47,14 +48,14 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   @override
   void validateEmail(String email) {
     _email = email;
-    _emailError.value = validation.validate("email", email);
+    _emailError.value = _validateField(field: "email", value: email);
     _validateForm();
   }
 
   @override
   void validatePassword(String password) {
     _password = password;
-    _passwordError.value = validation.validate("password", password);
+    _passwordError.value = _validateField(field: "password", value: password);
     _validateForm();
   }
 
@@ -72,9 +73,25 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
 
       _navigateToStream.value = "/surveys";
     } on DomainError catch (error) {
-      _mainError.value = error.descricao;
+      switch (error) {
+        case DomainError.invalidCredentials:
+          _mainError.value = UIError.invalidCredentials;
+          break;
+        default:
+          _mainError.value = UIError.unexpected;
+      }
     } finally {
       _loading.value = false;
+    }
+  }
+
+  UIError? _validateField({required String field, required String value}) {
+    final error = validation.validate(field, value);
+
+    switch (error) {
+      case ValidationError.invalidField: return UIError.invalidField;
+      case ValidationError.requiredField: return UIError.requiredField;
+      default: return null;
     }
   }
 

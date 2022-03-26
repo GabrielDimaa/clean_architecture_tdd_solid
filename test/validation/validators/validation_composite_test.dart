@@ -1,3 +1,4 @@
+import 'package:clean_architecture_tdd_solid/presentation/dependencies/validation.dart';
 import 'package:clean_architecture_tdd_solid/validation/dependencies/field_validation.dart';
 import 'package:clean_architecture_tdd_solid/validation/validators/validation_composite.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,15 +12,15 @@ void main() {
   late FieldValidationSpy validation2;
   late FieldValidationSpy validation3;
 
-  void mockValidation1(String? error) {
+  void mockValidation1(ValidationError? error) {
     when(() => validation1.validate(any())).thenReturn(error);
   }
 
-  void mockValidation2(String? error) {
+  void mockValidation2(ValidationError? error) {
     when(() => validation2.validate(any())).thenReturn(error);
   }
 
-  void mockValidation3(String? error) {
+  void mockValidation3(ValidationError? error) {
     when(() => validation3.validate(any())).thenReturn(error);
   }
 
@@ -40,20 +41,18 @@ void main() {
   });
 
   test("Deve retornar null se todas validações retornar null ou vazio", () {
-    mockValidation2("");
-
     final error = sut.validate("any_field1", "any_value");
 
     expect(error, null);
   });
 
   test("Deve retornar primeiro erro", () {
-    mockValidation1("error_1");
-    mockValidation2("error_2");
-    mockValidation3("error_3");
+    mockValidation1(ValidationError.requiredField);
+    mockValidation2(ValidationError.requiredField);
+    mockValidation3(ValidationError.invalidField);
 
     final error = sut.validate("any_field2", "any_value");
 
-    expect(error, "error_2");
+    expect(error, ValidationError.requiredField);
   });
 }

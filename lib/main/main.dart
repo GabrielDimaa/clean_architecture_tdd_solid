@@ -1,10 +1,13 @@
 import 'package:clean_architecture_tdd_solid/ui/components/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 import 'factories/pages/login/login_page_factory.dart';
 import 'factories/pages/splash/splash_page_factory.dart';
 
 void main() {
+  Provider.debugCheckInvalidValueType = null;
+
   runApp(const App());
 }
 

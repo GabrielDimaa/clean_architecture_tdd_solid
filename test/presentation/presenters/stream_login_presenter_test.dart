@@ -3,6 +3,7 @@ import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/authentication.dart';
 import 'package:clean_architecture_tdd_solid/presentation/dependencies/validation.dart';
 import 'package:clean_architecture_tdd_solid/presentation/presenter/stream_login_presenter.dart';
+import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -23,6 +24,8 @@ void main() {
   When mockAuthenticationCall({String? field}) => when(() => authentication.auth(AuthenticationParams(email: email, password: password)));
 
   void mockValidation({String? field, String? value}) => mockValidationCall(field: field).thenReturn(value);
+
+  void mockValidationError({String? field, ValidationError? value}) => mockValidationCall(field: field).thenReturn(value);
 
   void mockAuthentication() => mockAuthenticationCall().thenAnswer((_) async => AccountEntity(faker.guid.guid()));
 
@@ -46,9 +49,9 @@ void main() {
   });
 
   test("Deve emitir erro se a validação do email falhar", () {
-    mockValidation(value: "error");
+    mockValidationError(value: ValidationError.invalidField);
 
-    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, "error")));
+    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, UIError.invalidField)));
     sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validateEmail(email);
@@ -70,9 +73,9 @@ void main() {
   });
 
   test("Deve emitir erro se a validação da senha falhar", () {
-    mockValidation(value: "error");
+    mockValidationError(value: ValidationError.invalidField);
 
-    sut.passwordErrorStream?.listen(expectAsync1((error) => expect(error, "error")));
+    sut.passwordErrorStream?.listen(expectAsync1((error) => expect(error, UIError.invalidField)));
     sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validatePassword(password);
@@ -88,10 +91,8 @@ void main() {
   });
 
   test("Deve invalidar o formulário se a validação do email falhar", () {
-    mockValidation(field: "email", value: "error");
+    mockValidationError(field: "email", value: ValidationError.invalidField);
 
-    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, "error")));
-    sut.passwordErrorStream?.listen(expectAsync1((error) => expect(error, null)));
     sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validateEmail(email);
@@ -134,7 +135,7 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.loadingStream, emits(false));
-    sut.mainErrorStream?.listen(expectAsync1((error) => expect(error, "Credenciais inválidas.")));
+    sut.mainErrorStream?.listen(expectAsync1((error) => expect(error, UIError.invalidCredentials)));
 
     await sut.auth();
   });
@@ -146,7 +147,7 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.loadingStream, emits(false));
-    sut.mainErrorStream?.listen(expectAsync1((error) => expect(error, "Algo errado aconteceu. Tente novamente em breve.")));
+    sut.mainErrorStream?.listen(expectAsync1((error) => expect(error, UIError.unexpected)));
 
     await sut.auth();
   });

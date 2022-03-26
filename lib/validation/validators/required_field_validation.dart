@@ -1,6 +1,8 @@
 import 'package:clean_architecture_tdd_solid/validation/dependencies/field_validation.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../presentation/dependencies/validation.dart';
+
 class RequiredFieldValidation extends Equatable implements FieldValidation {
   @override
   final String field;
@@ -8,9 +10,9 @@ class RequiredFieldValidation extends Equatable implements FieldValidation {
   const RequiredFieldValidation(this.field);
 
   @override
-  String? validate(String? value) {
+  ValidationError? validate(String? value) {
     if (value?.isEmpty ?? true) {
-      return "Campo obrigatório.";
+      return ValidationError.requiredField;
     }
 
     return null;

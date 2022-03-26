@@ -1,3 +1,4 @@
+import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../login_presenter.dart';
@@ -9,13 +10,13 @@ class EmailInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final LoginPresenter presenter = Provider.of<LoginPresenter>(context);
 
-    return StreamBuilder<String?>(
+    return StreamBuilder<UIError?>(
       stream: presenter.emailErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
           decoration: InputDecoration(
             labelText: "Email",
-            errorText: (snapshot.data?.isEmpty ?? true) ? null : snapshot.data,
+            errorText: snapshot.hasData ? null : snapshot.data!.descricao,
             icon: Icon(
               Icons.email,
               color: Theme.of(context).primaryColorLight,

@@ -1,11 +1,13 @@
 import 'package:clean_architecture_tdd_solid/ui/components/error_snackbar.dart';
 import 'package:clean_architecture_tdd_solid/ui/components/spinner_dialog.dart';
+import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/components/email_input.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/components/login_button.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/components/password_input.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../components/components.dart';
+import '../../helpers/i18n/resources.dart';
 import 'login_presenter.dart';
 import 'package:flutter/material.dart';
 
@@ -27,9 +29,9 @@ class LoginPage extends StatelessWidget {
             }
           });
 
-          presenter.mainErrorStream?.listen((error) {
+          presenter.mainErrorStream?.listen((UIError? error) {
             if (error != null) {
-              showErrorMessage(context, error);
+              showErrorMessage(context, error.descricao);
             }
           });
 
@@ -61,7 +63,7 @@ class LoginPage extends StatelessWidget {
                           TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(Icons.person),
-                            label: const Text("Criar conta"),
+                            label: Text(R.strings.addAccount),
                           ),
                         ],
                       ),
