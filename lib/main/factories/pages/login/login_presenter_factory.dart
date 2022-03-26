@@ -8,7 +8,7 @@ LoginPresenter makeStreamLoginPresenter() {
   return GetxLoginPresenter(
     authentication: makeRemoteAuthentication(),
     validation: makeLoginValidation(),
-    saveCurrentAccount: makeCurrentAccount(),
+    saveCurrentAccount: makeSaveCurrentAccount(),
   );
 }
 
@@ -16,6 +16,6 @@ LoginPresenter makeGetxLoginPresenter() {
   return GetxLoginPresenter(
     authentication: makeRemoteAuthentication(),
     validation: makeLoginValidation(),
-    saveCurrentAccount: makeCurrentAccount(),
+    saveCurrentAccount: makeSaveCurrentAccount(),
   );
 }

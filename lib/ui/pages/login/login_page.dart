@@ -10,16 +10,16 @@ import 'login_presenter.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
-  final LoginPresenter? presenter;
+  final LoginPresenter presenter;
 
-  const LoginPage({this.presenter, Key? key}) : super(key: key);
+  const LoginPage({required this.presenter, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          presenter?.loadingStream?.listen((loading) {
+          presenter.loadingStream?.listen((loading) {
             if (loading) {
               showLoading(context);
             } else {
@@ -27,13 +27,13 @@ class LoginPage extends StatelessWidget {
             }
           });
 
-          presenter?.mainErrorStream?.listen((error) {
+          presenter.mainErrorStream?.listen((error) {
             if (error != null) {
               showErrorMessage(context, error);
             }
           });
 
-          presenter?.navigateToStream?.listen((String? page) {
+          presenter.navigateToStream?.listen((String? page) {
             if (page?.isNotEmpty ?? false) {
               Get.offAllNamed(page!);
             }

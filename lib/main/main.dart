@@ -1,9 +1,8 @@
 import 'package:clean_architecture_tdd_solid/ui/components/app_theme.dart';
 import 'package:flutter/material.dart';
-import '../ui/pages/login/login_page.dart';
 import 'package:get/route_manager.dart';
-
 import 'factories/pages/login/login_page_factory.dart';
+import 'factories/pages/splash/splash_page_factory.dart';
 
 void main() {
   runApp(const App());
@@ -20,6 +19,7 @@ class App extends StatelessWidget {
       theme: makeAppTheme(),
       initialRoute: "/login",
       getPages: [
+        GetPage(name: "/", page: makeSplashPage),
         GetPage(name: "/login", page: makeLoginPage),
         GetPage(name: "/surveys", page: () => const Scaffold(body: Text("Enquetes"))),
       ],
