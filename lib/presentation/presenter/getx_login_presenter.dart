@@ -1,15 +1,19 @@
 import 'dart:async';
-import 'package:get/get.dart';
+import 'package:clean_architecture_tdd_solid/domain/usecases/save_current_account.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/authentication.dart';
 import 'package:clean_architecture_tdd_solid/presentation/dependencies/validation.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/login_presenter.dart';
+import 'package:get/get.dart';
+
+import '../../domain/entities/account_entity.dart';
 
 class GetxLoginPresenter extends GetxController implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
+  final SaveCurrentAccount saveCurrentAccount;
 
-  GetxLoginPresenter({required this.authentication, required this.validation});
+  GetxLoginPresenter({required this.authentication, required this.validation, required this.saveCurrentAccount});
 
   String? _email;
   String? _password;
@@ -19,6 +23,7 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   final RxnString _mainError = RxnString();
   final RxBool _formValid = false.obs;
   final RxBool _loading = false.obs;
+  final RxnString _navigateToStream = RxnString();
 
   @override
   Stream<String?>? get emailErrorStream => _emailError.stream;
@@ -34,6 +39,9 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
 
   @override
   Stream<bool>? get loadingStream => _loading.stream;
+
+  @override
+  Stream<String?>? get navigateToStream => _navigateToStream.stream;
 
   @override
   void validateEmail(String email) {
@@ -58,7 +66,10 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
     try {
       _loading.value = true;
 
-      await authentication.auth(AuthenticationParams(email: _email!, password: _password!));
+      final AccountEntity account = await authentication.auth(AuthenticationParams(email: _email!, password: _password!));
+      await saveCurrentAccount.save(account);
+
+      _navigateToStream.value = "/surveys";
     } on DomainError catch (error) {
       _mainError.value = error.descricao;
     } finally {

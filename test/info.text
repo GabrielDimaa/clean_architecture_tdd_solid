@@ -1,0 +1,5 @@
+sut: Classe que está sendo testada.
+
+Spy: Capturar valores e mockar resultados.
+Stubby: Não quer capturar nada e se preocupa apenas em mockar resultado.
+Mock: Apenas capturar e não quer mockar nada.

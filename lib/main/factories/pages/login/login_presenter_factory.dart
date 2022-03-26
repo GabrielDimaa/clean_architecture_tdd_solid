@@ -1,18 +1,21 @@
 import 'package:clean_architecture_tdd_solid/main/factories/pages/login/login_validation_factory.dart';
 import 'package:clean_architecture_tdd_solid/main/factories/usecases/authentication_factory.dart';
-import 'package:clean_architecture_tdd_solid/presentation/presenter/stream_login_presenter.dart';
+import 'package:clean_architecture_tdd_solid/main/factories/usecases/save_current_account_factory.dart';
+import 'package:clean_architecture_tdd_solid/presentation/presenter/getx_login_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/login_presenter.dart';
 
 LoginPresenter makeStreamLoginPresenter() {
-  return StreamLoginPresenter(
+  return GetxLoginPresenter(
     authentication: makeRemoteAuthentication(),
     validation: makeLoginValidation(),
+    saveCurrentAccount: makeCurrentAccount(),
   );
 }
 
 LoginPresenter makeGetxLoginPresenter() {
-  return StreamLoginPresenter(
+  return GetxLoginPresenter(
     authentication: makeRemoteAuthentication(),
     validation: makeLoginValidation(),
+    saveCurrentAccount: makeCurrentAccount(),
   );
 }

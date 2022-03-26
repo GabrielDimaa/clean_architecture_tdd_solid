@@ -1,10 +1,11 @@
 import 'package:clean_architecture_tdd_solid/domain/entities/account_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/authentication.dart';
+import 'package:clean_architecture_tdd_solid/domain/usecases/save_current_account.dart';
 import 'package:clean_architecture_tdd_solid/presentation/dependencies/validation.dart';
 import 'package:clean_architecture_tdd_solid/presentation/presenter/getx_login_presenter.dart';
-import 'package:clean_architecture_tdd_solid/presentation/presenter/stream_login_presenter.dart';
 import 'package:faker/faker.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -12,32 +13,45 @@ class ValidationSpy extends Mock implements Validation {}
 
 class AuthenticationSpy extends Mock implements Authentication {}
 
+class SaveCurrentAccountSpy extends Mock implements SaveCurrentAccount {}
+
 void main() {
   late ValidationSpy validation;
   late GetxLoginPresenter sut;
   late AuthenticationSpy authentication;
+  late SaveCurrentAccount saveCurrentAccount;
   late String email;
   late String password;
+  late String token;
 
   When mockValidationCall({String? field}) => when(() => validation.validate(field ?? any(), any()));
 
   When mockAuthenticationCall({String? field}) => when(() => authentication.auth(AuthenticationParams(email: email, password: password)));
 
+  When mockSaveCurrentAccountCall() => when(() => saveCurrentAccount.save(AccountEntity(token)));
+
   void mockValidation({String? field, String? value}) => mockValidationCall(field: field).thenReturn(value);
 
-  void mockAuthentication() => mockAuthenticationCall().thenAnswer((_) async => AccountEntity(faker.guid.guid()));
+  void mockAuthentication() => mockAuthenticationCall().thenAnswer((_) async => AccountEntity(token));
 
   void mockAuthenticationError(DomainError error) => mockAuthenticationCall().thenThrow(error);
+
+  void mockSaveCurrentAccount() => mockSaveCurrentAccountCall().thenAnswer((_) => Future.value());
+
+  void mockSaveCurrentAccountError() => mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
 
   setUp(() {
     validation = ValidationSpy();
     authentication = AuthenticationSpy();
-    sut = GetxLoginPresenter(validation: validation, authentication: authentication);
+    saveCurrentAccount = SaveCurrentAccountSpy();
+    sut = GetxLoginPresenter(validation: validation, authentication: authentication, saveCurrentAccount: saveCurrentAccount);
     email = faker.internet.email();
     password = faker.internet.password();
+    token = faker.guid.guid();
 
     mockValidation();
     mockAuthentication();
+    mockSaveCurrentAccount();
   });
 
   test("Deve chamar validation ao alterar email", () {
@@ -111,12 +125,37 @@ void main() {
   });
 
   test("Deve chamar authentication com valores corretos", () async {
+    when(() => saveCurrentAccount.save(AccountEntity(token))).thenAnswer((_) => Future.value());
+
     sut.validateEmail(email);
     sut.validatePassword(password);
 
     await sut.auth();
 
     verify(() => authentication.auth(AuthenticationParams(email: email, password: password))).called(1);
+  });
+
+  test("Deve emitir UnexpectedError se SaveCurrentAccount falhar", () async {
+    mockSaveCurrentAccountError();
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.loadingStream, emitsInOrder([true, false]));
+    sut.mainErrorStream?.listen(expectAsync1((error) => expect(error, "Algo errado aconteceu. Tente novamente em breve.")));
+
+    await sut.auth();
+  });
+
+  test("Deve chamar SaveCurrentAccount com valores corretos", () async {
+    when(() => saveCurrentAccount.save(AccountEntity(token))).thenAnswer((_) => Future.value());
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    await sut.auth();
+
+    verify(() => saveCurrentAccount.save(AccountEntity(token))).called(1);
   });
 
   test("Deve emitir evento correto quando sucesso na authentication", () async {
@@ -148,6 +187,15 @@ void main() {
 
     expectLater(sut.loadingStream, emitsInOrder([true, false]));
     sut.mainErrorStream?.listen(expectAsync1((error) => expect(error, "Algo errado aconteceu. Tente novamente em breve.")));
+
+    await sut.auth();
+  });
+
+  test("Deve alterar Page em caso de sucesso", () async {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.navigateToStream?.listen(expectAsync1((page) => expect(page, '/surveys')));
 
     await sut.auth();
   });

@@ -29,6 +29,9 @@ class StreamLoginPresenter implements LoginPresenter {
   Stream<bool>? get loadingStream => _controller?.stream.map((state) => state.loading).distinct();
 
   @override
+  Stream<String?>? get navigateToStream => _controller?.stream.map((state) => state.navigateToStream).distinct();
+
+  @override
   void validateEmail(String email) {
     _state.email = email;
     _state.emailError = validation.validate("email", email);
@@ -73,6 +76,7 @@ class LoginState {
   String? passwordError;
   String? mainError;
   bool loading = false;
+  String? navigateToStream;
 
   bool get formValid => emailError == null && email != null && passwordError == null && password != null;
 }
