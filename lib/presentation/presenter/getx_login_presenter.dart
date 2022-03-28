@@ -66,6 +66,7 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
   @override
   Future<void> auth() async {
     try {
+      _mainError.value = null;
       _loading.value = true;
 
       final AccountEntity account = await authentication.auth(AuthenticationParams(email: _email!, password: _password!));
@@ -79,6 +80,7 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
           break;
         default:
           _mainError.value = UIError.unexpected;
+          break;
       }
     } finally {
       _loading.value = false;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'factories/pages/login/login_page_factory.dart';
+import 'factories/pages/signup/signup_page_factory.dart';
 import 'factories/pages/splash/splash_page_factory.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class App extends StatelessWidget {
       getPages: [
         GetPage(name: "/", page: makeSplashPage),
         GetPage(name: "/login", page: makeLoginPage),
+        GetPage(name: "/signup", page: makeSignUpPage),
         GetPage(name: "/surveys", page: () => const Scaffold(body: Text("Enquetes"))),
       ],
     );
