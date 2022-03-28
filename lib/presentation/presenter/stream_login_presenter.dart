@@ -84,6 +84,9 @@ class StreamLoginPresenter implements LoginPresenter {
   }
 
   void _update() => _controller?.add(_state);
+
+  @override
+  void goToSignUp() => _state.navigateToStream = "/login";
 }
 
 class LoginState {

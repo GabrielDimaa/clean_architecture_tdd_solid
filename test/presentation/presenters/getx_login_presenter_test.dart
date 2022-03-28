@@ -210,4 +210,9 @@ void main() {
 
     await sut.auth();
   });
+
+  test("Deve ir para SignUpPage", () async {
+    sut.navigateToStream?.listen(expectAsync1((page) => expect(page, "/signup")));
+    sut.goToSignUp();
+  });
 }

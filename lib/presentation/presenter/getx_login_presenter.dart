@@ -85,6 +85,9 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
     }
   }
 
+  @override
+  void goToSignUp() => _navigateToStream.value = "/signup";
+
   UIError? _validateField({required String field, required String value}) {
     final error = validation.validate(field, value);
 
@@ -97,15 +100,4 @@ class GetxLoginPresenter extends GetxController implements LoginPresenter {
 
   @override
   void dispose() {}
-}
-
-class LoginState {
-  String? email;
-  String? emailError;
-  String? password;
-  String? passwordError;
-  String? mainError;
-  bool loading = false;
-
-  bool get formValid => emailError == null && email != null && passwordError == null && password != null;
 }
