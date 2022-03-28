@@ -43,9 +43,11 @@ void main() {
   });
 
   test("Deve chamar validation ao alterar email", () {
+    final Map formData = {'email': email, 'password': null};
+
     sut.validateEmail(email);
 
-    verify(() => validation.validate("email", email)).called(1);
+    verify(() => validation.validate("email", formData)).called(1);
   });
 
   test("Deve emitir erro se a validação do email falhar", () {
@@ -67,9 +69,11 @@ void main() {
   });
 
   test("Deve chamar validation ao alterar senha", () {
+    final Map formData = {'email': null, 'password': password};
+
     sut.validatePassword(password);
 
-    verify(() => validation.validate("password", password)).called(1);
+    verify(() => validation.validate("password", formData)).called(1);
   });
 
   test("Deve emitir erro se a validação da senha falhar", () {

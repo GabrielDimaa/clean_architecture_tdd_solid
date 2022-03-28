@@ -68,7 +68,12 @@ class StreamLoginPresenter implements LoginPresenter {
   }
 
   UIError? _validateField({required String field, required String value}) {
-    final error = validation.validate(field, value);
+    final Map formData = {
+      'email': _state.email,
+      'password': _state.password,
+    };
+
+    final error = validation.validate(field, formData);
 
     switch (error) {
       case ValidationError.invalidField: return UIError.invalidField;

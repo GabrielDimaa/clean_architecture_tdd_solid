@@ -68,9 +68,16 @@ void main() {
   });
 
   test("Deve chamar validation ao alterar email", () {
+    final Map formData = {
+      'name': null,
+      'email': email,
+      'password': null,
+      'passwordConfirmation': null,
+    };
+
     sut.validateEmail(email);
 
-    verify(() => validation.validate("email", email)).called(1);
+    verify(() => validation.validate("email", formData)).called(1);
   });
 
   test("Deve emitir erro se o email for inválido", () {
@@ -102,9 +109,16 @@ void main() {
   });
 
   test("Deve chamar validation ao alterar nome", () {
+    final Map formData = {
+      'name': name,
+      'email': null,
+      'password': null,
+      'passwordConfirmation': null,
+    };
+
     sut.validateName(name);
 
-    verify(() => validation.validate("name", name)).called(1);
+    verify(() => validation.validate("name", formData)).called(1);
   });
 
   test("Deve emitir erro se o nome for inválido", () {
@@ -136,9 +150,16 @@ void main() {
   });
 
   test("Deve chamar validation ao alterar senha", () {
+    final Map formData = {
+      'name': null,
+      'email': null,
+      'password': password,
+      'passwordConfirmation': null,
+    };
+
     sut.validatePassword(password);
 
-    verify(() => validation.validate("password", password)).called(1);
+    verify(() => validation.validate("password", formData)).called(1);
   });
 
   test("Deve emitir erro se a senha for inválido", () {
@@ -170,9 +191,16 @@ void main() {
   });
 
   test("Deve chamar validation ao alterar confirme senha", () {
+    final Map formData = {
+      'name': null,
+      'email': null,
+      'password': null,
+      'passwordConfirmation': passwordConfirmation,
+    };
+
     sut.validatePasswordConfirmation(passwordConfirmation);
 
-    verify(() => validation.validate("passwordConfirmation", passwordConfirmation)).called(1);
+    verify(() => validation.validate("passwordConfirmation", formData)).called(1);
   });
 
   test("Deve emitir erro se confirme senha for inválido", () {

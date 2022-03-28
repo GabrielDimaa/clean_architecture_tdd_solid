@@ -9,7 +9,7 @@ Validation makeLoginValidation() {
 
 List<FieldValidation> makeLoginValidations() {
   return [
-    ...ValidationBuilder.getInstance("email").requiredValidation().setEmailValidation().getValidations(),
-    ...ValidationBuilder.getInstance("password").requiredValidation().getValidations(),
+    ...ValidationBuilder.getInstance("email").requiredValidation().emailValidation().getValidations(),
+    ...ValidationBuilder.getInstance("password").requiredValidation().minValidation(3).getValidations(),
   ];
 }

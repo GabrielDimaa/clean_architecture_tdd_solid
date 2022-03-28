@@ -1,5 +1,7 @@
 import 'package:clean_architecture_tdd_solid/validation/dependencies/field_validation.dart';
+import 'package:clean_architecture_tdd_solid/validation/validators/compare_fields_validation.dart';
 import 'package:clean_architecture_tdd_solid/validation/validators/email_validation.dart';
+import 'package:clean_architecture_tdd_solid/validation/validators/min_length_validation.dart';
 import 'package:clean_architecture_tdd_solid/validation/validators/required_field_validation.dart';
 
 class ValidationBuilder {
@@ -23,8 +25,20 @@ class ValidationBuilder {
     return _instance;
   }
 
-  ValidationBuilder setEmailValidation() {
+  ValidationBuilder emailValidation() {
     _instance._validations.add(EmailValidation(_fieldName));
+
+    return _instance;
+  }
+
+  ValidationBuilder minValidation(int size) {
+    _instance._validations.add(MinLengthValidation(field: _fieldName, size: size));
+
+    return _instance;
+  }
+
+  ValidationBuilder sameAs(String fieldToCompare) {
+    _instance;_validations.add(CompareFieldsValidation(field: _fieldName, fieldToCompare: fieldToCompare));
 
     return _instance;
   }
