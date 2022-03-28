@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/add_account.dart';
-import 'package:clean_architecture_tdd_solid/domain/usecases/authentication.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/save_current_account.dart';
 import 'package:clean_architecture_tdd_solid/presentation/dependencies/validation.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/signup/signup_presenter.dart';

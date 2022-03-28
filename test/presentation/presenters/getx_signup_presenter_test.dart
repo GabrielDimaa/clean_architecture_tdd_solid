@@ -6,9 +6,7 @@ import 'package:clean_architecture_tdd_solid/presentation/dependencies/validatio
 import 'package:clean_architecture_tdd_solid/presentation/presenter/getx_signup_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
 import 'package:faker/faker.dart';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 import 'package:mocktail/mocktail.dart';
 
 class ValidationSpy extends Mock implements Validation {}

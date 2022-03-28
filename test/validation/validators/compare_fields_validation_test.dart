@@ -6,7 +6,7 @@ void main() {
   late CompareFieldsValidation sut;
 
   setUp(() {
-    sut = CompareFieldsValidation(field: "any_field", fieldToCompare: "other_field");
+    sut = const CompareFieldsValidation(field: "any_field", fieldToCompare: "other_field");
   });
 
   test("Deve retornar erro se o valor não for igual", () {
