@@ -133,7 +133,7 @@ void main() {
 
       final future = sut.request(url: url, method: "post");
 
-      expect(future, throwsA(HttpError.forbiden));
+      expect(future, throwsA(HttpError.forbidden));
     });
 
     test("Deve retornar ForbidenError se o post for 403", () async {
@@ -141,7 +141,7 @@ void main() {
 
       final future = sut.request(url: url, method: "post");
 
-      expect(future, throwsA(HttpError.forbiden));
+      expect(future, throwsA(HttpError.forbidden));
     });
 
     test("Deve retornar NotFoundError se o post for 404", () async {
