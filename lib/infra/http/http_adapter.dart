@@ -23,6 +23,9 @@ class HttpAdapter implements HttpClient<Map?> {
         case "post":
           response = await client.post(Uri.parse(url), headers: headers, body: bodyJson);
           break;
+        case "get":
+          response = await client.get(Uri.parse(url), headers: headers);
+          break;
       }
     } catch (e) {
       throw HttpError.serverError;
