@@ -2,17 +2,17 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import '../../data/http/http.dart';
 
-class HttpAdapter implements HttpClient<Map?> {
+class HttpAdapter implements HttpClient {
   final Client client;
 
   HttpAdapter(this.client);
 
   @override
-  Future<Map?> request({required String url, required String method, Map? body}) async {
-    final headers = {
+  Future<Map?> request({required String url, required String method, Map? body, Map<String, String>? headers}) async {
+    final defaultHeaders = headers ?? {}..addAll({
       'content-type': 'application/json',
       'accept': 'application/json',
-    };
+    });
 
     final bodyJson = body != null ? jsonEncode(body) : null;
 
@@ -21,10 +21,10 @@ class HttpAdapter implements HttpClient<Map?> {
     try {
       switch (method) {
         case "post":
-          response = await client.post(Uri.parse(url), headers: headers, body: bodyJson);
+          response = await client.post(Uri.parse(url), headers: defaultHeaders, body: bodyJson);
           break;
         case "get":
-          response = await client.get(Uri.parse(url), headers: headers);
+          response = await client.get(Uri.parse(url), headers: defaultHeaders);
           break;
       }
     } catch (e) {

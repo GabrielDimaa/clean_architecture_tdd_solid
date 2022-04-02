@@ -3,6 +3,7 @@ import 'package:clean_architecture_tdd_solid/ui/pages/surveys/survey_view_model.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/reload_screen.dart';
 import '../../components/spinner_dialog.dart';
 import '../../helpers/i18n/resources.dart';
 import 'components/survey_items.dart';
@@ -17,6 +18,13 @@ class SurveysPage extends StatefulWidget {
 }
 
 class _SurveysPageState extends State<SurveysPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    widget.presenter.loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -48,6 +48,18 @@ void main() {
             },
             body: '{"any_key":"any_value"}',
           ));
+
+      await sut.request(url: url, method: "post", body: {'any_key': 'any_value'}, headers: {'any_header': 'any_value'});
+
+      verify(() => client.post(
+            Uri.parse(url),
+            headers: {
+              'content-type': 'application/json',
+              'accept': 'application/json',
+              'any_header': 'any_value',
+            },
+            body: '{"any_key":"any_value"}',
+          ));
     });
 
     test("Deve retornar data se o post for 200", () async {
@@ -189,13 +201,14 @@ void main() {
     test("Deve chamar get com valores corretos", () async {
       await sut.request(url: url, method: "get", body: {'any_key': 'any_value'});
 
-      verify(() => client.get(
-        Uri.parse(url),
-        headers: {
-          'content-type': 'application/json',
-          'accept': 'application/json',
-        }
-      ));
+      verify(() => client.get(Uri.parse(url), headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+          }));
+
+      await sut.request(url: url, method: "get", body: {'any_key': 'any_value'}, headers: {'any_header': 'any_value'});
+
+      verify(() => client.get(Uri.parse(url), headers: {'content-type': 'application/json', 'accept': 'application/json', 'any_header': 'any_value'}));
     });
 
     test("Deve retornar data se o get for 200", () async {

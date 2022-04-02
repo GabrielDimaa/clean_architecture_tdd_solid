@@ -6,7 +6,7 @@ import '../../http/http.dart';
 import '../../models/remote_account_model.dart';
 
 class RemoteAddAccount implements AddAccount {
-  final HttpClient<Map?> httpClient;
+  final HttpClient httpClient;
   final String url;
 
   RemoteAddAccount({required this.httpClient, required this.url});
