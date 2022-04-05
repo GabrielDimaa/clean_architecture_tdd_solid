@@ -3,5 +3,5 @@ import '../../../../presentation/presenter/get_survey_presenter.dart';
 import '../../usecases/load_surveys_factory.dart';
 
 SurveysPresenter makeGetxSurveyPresenter() {
-  return GetxSurveysPresenter(loadSurveys: makeRemoteLoadSurveys());
+  return GetxSurveysPresenter(loadSurveys: makeRemoteLoadSurveysWithLocalFallback());
 }
