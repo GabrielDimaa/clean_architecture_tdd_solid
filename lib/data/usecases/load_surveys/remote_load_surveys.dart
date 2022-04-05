@@ -21,4 +21,16 @@ class RemoteLoadSurveys implements LoadSurveys {
       throw error == HttpError.forbidden ? DomainError.accessDenied : DomainError.unexpected;
     }
   }
+
+  @override
+  Future<void> save(List<SurveyEntity> surveys) {
+    // TODO: implement save
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> validate() {
+    // TODO: implement validate
+    throw UnimplementedError();
+  }
 }
