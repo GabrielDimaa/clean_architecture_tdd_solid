@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../survey_presenter.dart';
+import '../surveys_presenter.dart';
 import '../survey_view_model.dart';
 
 class SurveyItem extends StatelessWidget {

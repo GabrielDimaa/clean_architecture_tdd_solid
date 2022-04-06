@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'factories/pages/login/login_page_factory.dart';
 import 'factories/pages/signup/signup_page_factory.dart';
 import 'factories/pages/splash/splash_page_factory.dart';
+import 'factories/pages/survey_result/survey_result_page_factory.dart';
 import 'factories/pages/surveys/surveys_page_factory.dart';
 
 void main() {
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
         GetPage(name: "/login", page: makeLoginPage),
         GetPage(name: "/signup", page: makeSignUpPage),
         GetPage(name: "/surveys", page: makeSurveysPage),
+        GetPage(name: "/surveys_result/:survey_id", page: makeSurveyResultPage),
       ],
     );
   }

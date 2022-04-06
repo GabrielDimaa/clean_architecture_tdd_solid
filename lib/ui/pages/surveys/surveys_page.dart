@@ -1,4 +1,4 @@
-import 'package:clean_architecture_tdd_solid/ui/pages/surveys/survey_presenter.dart';
+import 'package:clean_architecture_tdd_solid/ui/pages/surveys/surveys_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/surveys/survey_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

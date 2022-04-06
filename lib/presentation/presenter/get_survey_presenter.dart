@@ -5,7 +5,7 @@ import '../../domain/entities/survey_entity.dart';
 import '../../domain/helpers/domain_error.dart';
 import '../../domain/usecases/load_surveys.dart';
 import '../../ui/helpers/errors/ui_error.dart';
-import '../../ui/pages/surveys/survey_presenter.dart';
+import '../../ui/pages/surveys/surveys_presenter.dart';
 import '../../ui/pages/surveys/survey_view_model.dart';
 
 class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
