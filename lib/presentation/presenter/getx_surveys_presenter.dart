@@ -1,3 +1,5 @@
+import 'package:clean_architecture_tdd_solid/presentation/mixins/loading_manager.dart';
+import 'package:clean_architecture_tdd_solid/presentation/mixins/session_manager.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -7,8 +9,9 @@ import '../../domain/usecases/load_surveys.dart';
 import '../../ui/helpers/errors/ui_error.dart';
 import '../../ui/pages/surveys/surveys_presenter.dart';
 import '../../ui/pages/surveys/survey_view_model.dart';
+import '../mixins/navigation_manager.dart';
 
-class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
+class GetxSurveysPresenter extends GetxController with SessionManager, LoadingManager, NavigationManager implements SurveysPresenter {
   final LoadSurveys loadSurveys;
 
   GetxSurveysPresenter({required this.loadSurveys});
@@ -16,7 +19,7 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
   @override
   Future<void> loadData() async {
     try {
-      _loading.value = true;
+      loading = true;
 
       final List<SurveyEntity> surveys = await loadSurveys.load();
 
@@ -28,32 +31,22 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
         didAnswer: e.didAnswer,
       ))
           .toList();
-    } on DomainError {
-      _surveys.subject.addError(UIError.unexpected.descricao);
+    } on DomainError catch (error) {
+      if (error == DomainError.accessDenied) {
+        sessionExpired = true;
+      } else {
+        _surveys.subject.addError(UIError.unexpected.descricao);
+      }
     } finally {
-      _loading.value = false;
+      loading = false;
     }
   }
 
-  final RxBool _loading = true.obs;
   final Rx<List<SurveyViewModel>> _surveys = Rx<List<SurveyViewModel>>([]);
-
-  @override
-  Stream<bool> get loadingStream => _loading.stream;
 
   @override
   Stream<List<SurveyViewModel>> get surveysStream => _surveys.stream;
 
   @override
-  void goToSurveyResult(String surveyId) {
-    // TODO: implement goToSurveyResult
-  }
-
-  @override
-  // TODO: implement navigateToStream
-  Stream<String?> get navigateToStream => throw UnimplementedError();
-
-  @override
-  // TODO: implement sessionExpiredStream
-  Stream<bool> get sessionExpiredStream => throw UnimplementedError();
+  void goToSurveyResult(String surveyId) => navigateTo = "/survey_result/$surveyId";
 }

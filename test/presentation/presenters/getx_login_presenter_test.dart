@@ -68,8 +68,8 @@ void main() {
   test("Deve emitir erro se o email for inválido", () {
     mockValidationError(value: ValidationError.invalidField);
 
-    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, UIError.invalidField)));
-    sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
+    sut.emailErrorStream.listen(expectAsync1((error) => expect(error, UIError.invalidField)));
+    sut.formValidStream.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validateEmail(email);
     sut.validateEmail(email);
@@ -78,16 +78,16 @@ void main() {
   test("Deve emitir erro se o email for vazio", () {
     mockValidationError(value: ValidationError.requiredField);
 
-    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, UIError.requiredField)));
-    sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
+    sut.emailErrorStream.listen(expectAsync1((error) => expect(error, UIError.requiredField)));
+    sut.formValidStream.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validateEmail(email);
     sut.validateEmail(email);
   });
 
   test("Deve emitir null se a validação do email for sucesso", () {
-    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, null)));
-    sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
+    sut.emailErrorStream.listen(expectAsync1((error) => expect(error, null)));
+    sut.formValidStream.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validateEmail(email);
     sut.validateEmail(email);
@@ -104,16 +104,16 @@ void main() {
   test("Deve emitir erro se a senha for vazia", () {
     mockValidationError(value: ValidationError.requiredField);
 
-    sut.passwordErrorStream?.listen(expectAsync1((error) => expect(error, UIError.requiredField)));
-    sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
+    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, UIError.requiredField)));
+    sut.formValidStream.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validatePassword(password);
     sut.validatePassword(password);
   });
 
   test("Deve emitir null se a validação da senha for sucesso", () {
-    sut.passwordErrorStream?.listen(expectAsync1((error) => expect(error, null)));
-    sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
+    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, null)));
+    sut.formValidStream.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validatePassword(password);
     sut.validatePassword(password);
@@ -122,15 +122,15 @@ void main() {
   test("Deve invalidar o formulário se a validação do email falhar", () {
     mockValidationError(field: "email", value: ValidationError.invalidField);
 
-    sut.formValidStream?.listen(expectAsync1((valid) => expect(valid, false)));
+    sut.formValidStream.listen(expectAsync1((valid) => expect(valid, false)));
 
     sut.validateEmail(email);
     sut.validatePassword(password);
   });
 
   test("Deve validar o formulário se a validação do email e senha for sucesso", () async {
-    sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, null)));
-    sut.passwordErrorStream?.listen(expectAsync1((error) => expect(error, null)));
+    sut.emailErrorStream.listen(expectAsync1((error) => expect(error, null)));
+    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, null)));
 
     expectLater(sut.formValidStream, emitsInOrder([false, true]));
 
@@ -211,13 +211,13 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
-    sut.navigateToStream?.listen(expectAsync1((page) => expect(page, '/surveys')));
+    sut.navigateToStream.listen(expectAsync1((page) => expect(page, '/surveys')));
 
     await sut.auth();
   });
 
   test("Deve ir para SignUpPage", () async {
-    sut.navigateToStream?.listen(expectAsync1((page) => expect(page, "/signup")));
+    sut.navigateToStream.listen(expectAsync1((page) => expect(page, "/signup")));
     sut.goToSignUp();
   });
 }

@@ -1,8 +1,10 @@
 import 'package:clean_architecture_tdd_solid/ui/components/reload_screen.dart';
+import 'package:clean_architecture_tdd_solid/ui/mixins/loading_manager.dart';
+import 'package:clean_architecture_tdd_solid/ui/mixins/session_manager.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/survey_result/survey_result_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/survey_result/survey_result_viewmodel.dart';
 import 'package:flutter/material.dart';
-import '../../components/spinner_dialog.dart';
+
 import '../../helpers/i18n/resources.dart';
 import 'components/survey_result.dart';
 
@@ -15,7 +17,7 @@ class SurveyResultPage extends StatefulWidget {
   _SurveyResultPageState createState() => _SurveyResultPageState();
 }
 
-class _SurveyResultPageState extends State<SurveyResultPage> {
+class _SurveyResultPageState extends State<SurveyResultPage> with LoadingManager, SessionManager {
   @override
   void initState() {
     super.initState();
@@ -29,16 +31,8 @@ class _SurveyResultPageState extends State<SurveyResultPage> {
         appBar: AppBar(title: Text(R.string.surveyResult)),
         body: Builder(
             builder: (context) {
-              // handleLoading(context, widget.presenter.isLoadingStream);
-              // handleSessionExpired(widget.presenter.isSessionExpiredStream);
-
-              widget.presenter.loadingStream.listen((loading) {
-                if (loading) {
-                  showLoading(context);
-                } else {
-                  hideLoading(context);
-                }
-              });
+              handleSessionExpired(widget.presenter.sessionExpiredStream);
+              handleLoading(context, widget.presenter.loadingStream);
 
               return StreamBuilder<SurveyResultViewModel?>(
                   stream: widget.presenter.surveyResultStream,

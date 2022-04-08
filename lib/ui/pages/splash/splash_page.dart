@@ -1,6 +1,6 @@
+import 'package:clean_architecture_tdd_solid/ui/mixins/navigation_manager.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/splash/splash_presenter.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SplashPage extends StatefulWidget {
   final SplashPresenter presenter;
@@ -11,7 +11,7 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage> with NavigationManager {
   @override
   void initState() {
     super.initState();
@@ -25,11 +25,7 @@ class _SplashPageState extends State<SplashPage> {
       appBar: AppBar(title: const Text('4Dev')),
       body: Builder(
         builder: (context) {
-          widget.presenter.navigateToStream.listen((page) {
-            if (page?.isNotEmpty ?? false) {
-              Get.offAllNamed(page!);
-            }
-          });
+          handleNavigation(widget.presenter.navigateToStream, clear: true);
 
           return const Center(
             child: CircularProgressIndicator(),

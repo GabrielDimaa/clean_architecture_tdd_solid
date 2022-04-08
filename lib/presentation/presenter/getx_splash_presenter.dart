@@ -1,15 +1,14 @@
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:clean_architecture_tdd_solid/presentation/mixins/navigation_manager.dart';
+import 'package:get/get.dart';
 
 import '../../domain/entities/account_entity.dart';
 import '../../domain/usecases/load_current_account.dart';
 import '../../ui/pages/splash/splash_presenter.dart';
 
-class GetxSplashPresenter implements SplashPresenter {
+class GetxSplashPresenter extends GetxController with NavigationManager implements SplashPresenter {
   final LoadCurrentAccount loadCurrentAccount;
 
   GetxSplashPresenter({required this.loadCurrentAccount});
-
-  final RxnString _navigateTo = RxnString();
 
   @override
   Future<void> checkAccount() async {
@@ -18,12 +17,9 @@ class GetxSplashPresenter implements SplashPresenter {
     try {
       final AccountEntity? account = await loadCurrentAccount.load();
 
-      _navigateTo.value = account == null ? "/login" : "/surveys";
+      navigateTo = account == null ? "/login" : "/surveys";
     } catch (e) {
-      _navigateTo.value = "/login";
+      navigateTo = "/login";
     }
   }
-
-  @override
-  Stream<String?> get navigateToStream => _navigateTo.stream;
 }

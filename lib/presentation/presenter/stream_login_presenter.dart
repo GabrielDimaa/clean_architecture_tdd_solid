@@ -15,22 +15,22 @@ class StreamLoginPresenter implements LoginPresenter {
   final LoginState _state = LoginState();
 
   @override
-  Stream<UIError?>? get emailErrorStream => _controller?.stream.map((state) => state.emailError).distinct();
+  Stream<UIError?> get emailErrorStream => _controller?.stream.map((state) => state.emailError).distinct() ?? Stream.value(null);
 
   @override
-  Stream<UIError?>? get passwordErrorStream => _controller?.stream.map((state) => state.passwordError).distinct();
+  Stream<UIError?> get passwordErrorStream => _controller?.stream.map((state) => state.passwordError).distinct() ?? Stream.value(null);
 
   @override
-  Stream<UIError?>? get mainErrorStream => _controller?.stream.map((state) => state.mainError).distinct();
+  Stream<UIError?> get mainErrorStream => _controller?.stream.map((state) => state.mainError).distinct() ?? Stream.value(null);
 
   @override
-  Stream<bool>? get formValidStream => _controller?.stream.map((state) => state.formValid).distinct();
+  Stream<bool> get formValidStream => _controller?.stream.map((state) => state.formValid).distinct() ?? Stream.value(false);
 
   @override
-  Stream<bool>? get loadingStream => _controller?.stream.map((state) => state.loading).distinct();
+  Stream<bool> get loadingStream => _controller?.stream.map((state) => state.loading).distinct() ?? Stream.value(false);
 
   @override
-  Stream<String?>? get navigateToStream => _controller?.stream.map((state) => state.navigateToStream).distinct();
+  Stream<String?> get navigateToStream => _controller?.stream.map((state) => state.navigateToStream).distinct() ?? Stream.value(null);
 
   @override
   void validateEmail(String email) {

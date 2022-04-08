@@ -1,6 +1,7 @@
-import 'package:clean_architecture_tdd_solid/ui/pages/surveys/surveys_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/surveys/survey_view_model.dart';
+import 'package:clean_architecture_tdd_solid/ui/pages/surveys/surveys_presenter.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/reload_screen.dart';
@@ -31,11 +32,6 @@ class _SurveysPageState extends State<SurveysPage> {
       appBar: AppBar(title: Text(R.string.surveys)),
       body: Builder(
         builder: (context) {
-          // handleLoading(context, widget.presenter.isLoadingStream);
-          // handleSessionExpired(widget.presenter.isSessionExpiredStream);
-          // handleNavigation(widget.presenter.navigateToStream);
-          // widget.presenter.loadData();
-          //
           widget.presenter.loadingStream.listen((loading) {
             if (loading) {
               showLoading(context);
@@ -43,18 +39,18 @@ class _SurveysPageState extends State<SurveysPage> {
               hideLoading(context);
             }
           });
-          //
-          // presenter.mainErrorStream?.listen((UIError? error) {
-          //   if (error != null) {
-          //     showErrorMessage(context, error.descricao);
-          //   }
-          // });
-          //
-          // presenter.navigateToStream?.listen((String? page) {
-          //   if (page?.isNotEmpty ?? false) {
-          //     Get.offAllNamed(page!);
-          //   }
-          // });
+
+          widget.presenter.sessionExpiredStream.listen((expired) {
+            if (expired) {
+              Get.offAllNamed("/login");
+            }
+          });
+
+          widget.presenter.navigateToStream.listen((String? page) {
+            if (page?.isNotEmpty ?? false) {
+              Get.toNamed(page!);
+            }
+          });
 
           return StreamBuilder<List<SurveyViewModel>>(
               stream: widget.presenter.surveysStream,

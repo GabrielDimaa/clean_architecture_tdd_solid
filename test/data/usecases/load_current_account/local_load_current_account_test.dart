@@ -13,7 +13,7 @@ void main() {
   late FetchSecureCacheStorageSpy fetchSecureCacheStorage;
   late String token;
 
-  When mockFetchSecureCall() => when(() => fetchSecureCacheStorage.fetchSecure(any()));
+  When mockFetchSecureCall() => when(() => fetchSecureCacheStorage.fetch(any()));
 
   void mockFetchSecure() => mockFetchSecureCall().thenAnswer((_) => Future.value(token));
 
@@ -30,7 +30,7 @@ void main() {
   test("Deve chamar FetchSecureCacheStorage com valor correto", () async {
     await sut.load();
 
-    verify(() => fetchSecureCacheStorage.fetchSecure("token"));
+    verify(() => fetchSecureCacheStorage.fetch("token"));
   });
 
   test("Deve retornar AccountEntity", () async {

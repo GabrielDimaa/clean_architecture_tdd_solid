@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-void showLoading(BuildContext context) {
-  showDialog<void>(
+Future<void> showLoading(BuildContext context) async {
+  await showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext dialogContext) {

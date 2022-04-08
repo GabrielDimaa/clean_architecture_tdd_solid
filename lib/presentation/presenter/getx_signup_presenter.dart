@@ -4,13 +4,17 @@ import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/add_account.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/save_current_account.dart';
 import 'package:clean_architecture_tdd_solid/presentation/dependencies/validation.dart';
+import 'package:clean_architecture_tdd_solid/presentation/mixins/form_manager.dart';
+import 'package:clean_architecture_tdd_solid/presentation/mixins/loading_manager.dart';
+import 'package:clean_architecture_tdd_solid/presentation/mixins/navigation_manager.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/signup/signup_presenter.dart';
 import 'package:get/get.dart';
 
 import '../../domain/entities/account_entity.dart';
 import '../../ui/helpers/errors/ui_error.dart';
+import '../mixins/ui_error_manager.dart';
 
-class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
+class GetxSignUpPresenter extends GetxController with NavigationManager, LoadingManager, FormManager, UIErrorManager implements SignUpPresenter {
   final AddAccount addAccount;
   final Validation validation;
   final SaveCurrentAccount saveCurrentAccount;
@@ -26,10 +30,6 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   final Rxn<UIError> _emailError = Rxn<UIError>();
   final Rxn<UIError> _passwordError = Rxn<UIError>();
   final Rxn<UIError> _passwordConfirmationError = Rxn<UIError>();
-  final Rxn<UIError> _mainError = Rxn<UIError>();
-  final RxBool _formValid = false.obs;
-  final RxBool _loading = false.obs;
-  final RxnString _navigateToStream = RxnString();
 
   @override
   Stream<UIError?> get nameErrorStream => _nameError.stream;
@@ -44,25 +44,13 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   Stream<UIError?> get passwordConfirmationErrorStream => _passwordConfirmationError.stream;
 
   @override
-  Stream<UIError?> get mainErrorStream => _mainError.stream;
-
-  @override
-  Stream<bool> get formValidStream => _formValid.stream;
-
-  @override
-  Stream<bool> get loadingStream => _loading.stream;
-
-  @override
-  Stream<String?> get navigateToStream => _navigateToStream.stream;
-
-  @override
-  void goToLogin() => _navigateToStream.value = "/login";
+  void goToLogin() => navigateTo = "/login";
 
   @override
   Future<void> signUp() async {
     try {
-      _mainError.value = null;
-      _loading.value = true;
+      mainError = null;
+      loading = true;
 
       final AccountEntity account = await addAccount.add(AddAccountParams(
         name: _name!,
@@ -73,17 +61,17 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
 
       await saveCurrentAccount.save(account);
 
-      _navigateToStream.value = "/surveys";
+      navigateTo = "/surveys";
     } on DomainError catch (error) {
       switch (error) {
         case DomainError.emailInUse:
-          _mainError.value = UIError.emailInUse;
+          mainError = UIError.emailInUse;
           break;
         default:
-          _mainError.value = UIError.unexpected;
+          mainError = UIError.unexpected;
       }
     } finally {
-      _loading.value = false;
+      loading = false;
     }
   }
 
@@ -116,7 +104,7 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   }
 
   void _validateForm() {
-    _formValid.value = _nameError.value == null &&
+    formValid = _nameError.value == null &&
         _emailError.value == null &&
         _passwordError.value == null &&
         _passwordConfirmationError.value == null &&

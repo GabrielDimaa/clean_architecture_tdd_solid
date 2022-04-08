@@ -20,7 +20,7 @@ void main() {
     value = faker.guid.guid();
   });
 
-  group("saveSecure", () {
+  group("save", () {
     When mockSaveSecureCall() => when(() => secureStorage.write(key: any(named: 'key'), value: any(named: 'value')));
 
     void mockSaveSecure() => mockSaveSecureCall().thenAnswer((_) => Future.value());
@@ -44,7 +44,7 @@ void main() {
     });
   });
 
-  group("fetchSecure", () {
+  group("fetch", () {
     When mockFetchSecureCall() => when(() => secureStorage.read(key: any(named: 'key')));
 
     void mockFetchSecure() => mockFetchSecureCall().thenAnswer((_) => Future.value(value));
@@ -54,13 +54,13 @@ void main() {
     setUp(() => mockFetchSecure());
 
     test("Deve chamar fetchSecure com valor correto", () async {
-      await sut.fetchSecure(key);
+      await sut.fetch(key);
 
       verify(() => secureStorage.read(key: key));
     });
 
     test("Deve retornar valor correto em caso de sucesso", () async {
-      final String? fetchValue = await sut.fetchSecure(key);
+      final String? fetchValue = await sut.fetch(key);
 
       expect(fetchValue, value);
     });
@@ -68,7 +68,31 @@ void main() {
     test("Deve throw se fetchSecure throws", () async {
       mockFetchSecureError();
 
-      final Future future = sut.fetchSecure(key);
+      final Future future = sut.fetch(key);
+
+      expect(future, throwsA(const TypeMatcher<Exception>()));
+    });
+  });
+
+  group("delete", () {
+    When mockDeleteSecureCall() => when(() => secureStorage.delete(key: any(named: 'key')));
+
+    void mockDeleteSecure() => mockDeleteSecureCall().thenAnswer((_) => Future.value(value));
+
+    void mockDeleteError() => mockDeleteSecureCall().thenThrow(Exception());
+
+    setUp(() => mockDeleteSecure());
+
+    test("Deve chamar delete com chave correta", () async {
+      await sut.delete(key);
+
+      verify(() => secureStorage.delete(key: key)).called(1);
+    });
+
+    test("Deve throw se delete throws", () async {
+      mockDeleteError();
+
+      final Future future = sut.delete(key);
 
       expect(future, throwsA(const TypeMatcher<Exception>()));
     });

@@ -1,5 +1,4 @@
 import 'package:clean_architecture_tdd_solid/data/http/http.dart';
-import 'package:clean_architecture_tdd_solid/domain/entities/survey_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/entities/surveys_answer_entity.dart';
 
 class RemoteSurveyAnswerModel {

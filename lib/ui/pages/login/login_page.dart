@@ -1,17 +1,17 @@
-import 'package:clean_architecture_tdd_solid/ui/components/error_snackbar.dart';
-import 'package:clean_architecture_tdd_solid/ui/components/spinner_dialog.dart';
-import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
+import 'package:clean_architecture_tdd_solid/ui/mixins/loading_manager.dart';
+import 'package:clean_architecture_tdd_solid/ui/mixins/navigation_manager.dart';
+import 'package:clean_architecture_tdd_solid/ui/mixins/ui_error_manager.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/components/email_input.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/components/login_button.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/login/components/password_input.dart';
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../components/components.dart';
 import '../../helpers/i18n/resources.dart';
 import 'login_presenter.dart';
-import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatelessWidget with LoadingManager, UIErrorManager, NavigationManager {
   final LoginPresenter presenter;
 
   const LoginPage({required this.presenter, Key? key}) : super(key: key);
@@ -21,25 +21,9 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          presenter.loadingStream?.listen((loading) {
-            if (loading) {
-              showLoading(context);
-            } else {
-              hideLoading(context);
-            }
-          });
-
-          presenter.mainErrorStream?.listen((UIError? error) {
-            if (error != null) {
-              showErrorMessage(context, error.descricao);
-            }
-          });
-
-          presenter.navigateToStream?.listen((String? page) {
-            if (page?.isNotEmpty ?? false) {
-              Get.offAllNamed(page!);
-            }
-          });
+          handleLoading(context, presenter.loadingStream);
+          handleMainError(context, presenter.mainErrorStream);
+          handleNavigation(presenter.navigateToStream, clear: true);
 
           return SingleChildScrollView(
             child: Column(

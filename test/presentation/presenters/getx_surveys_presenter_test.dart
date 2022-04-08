@@ -1,7 +1,7 @@
 import 'package:clean_architecture_tdd_solid/domain/entities/survey_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/load_surveys.dart';
-import 'package:clean_architecture_tdd_solid/presentation/presenter/get_survey_presenter.dart';
+import 'package:clean_architecture_tdd_solid/presentation/presenter/getx_surveys_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/surveys/survey_view_model.dart';
 import 'package:faker/faker.dart';
@@ -27,6 +27,10 @@ void main() {
 
   void mockLoadSurveysError() {
     mockLoadSurveysCall().thenThrow(DomainError.unexpected);
+  }
+
+  void mockAccessDeniedError() {
+    mockLoadSurveysCall().thenThrow(DomainError.accessDenied);
   }
 
   setUp(() {
@@ -59,5 +63,20 @@ void main() {
     sut.surveysStream.listen(null, onError: expectAsync1((err) => expect(err, UIError.unexpected.descricao)));
 
     await sut.loadData();
+  });
+
+  test("Deve emitir evento correto se perder token de acesso", () async {
+    mockAccessDeniedError();
+
+    expectLater(sut.loadingStream, emitsInOrder([true, false]));
+    expectLater(sut.sessionExpiredStream, emits(true));
+
+    await sut.loadData();
+  });
+
+  test("Deve ir para SurveyResultPage quando survey click", () async {
+    sut.navigateToStream.listen(expectAsync1((page) => expect(page, "/survey_result/any_route")));
+
+    sut.goToSurveyResult("any_route");
   });
 }

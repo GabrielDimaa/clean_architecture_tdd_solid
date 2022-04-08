@@ -6,6 +6,7 @@ import 'package:clean_architecture_tdd_solid/main/factories/http/http_client_fac
 HttpClient makeAuthorizeHttpClientDecorator() {
   return AuthorizeHttpClientDecorator(
     fetchSecureCacheStorage: makeSecureStorageAdapter(),
+    deleteSecureCacheStorage: makeSecureStorageAdapter(),
     decoratee: makeHttpAdapter(),
   );
 }
