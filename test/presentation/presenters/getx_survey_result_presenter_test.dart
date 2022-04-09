@@ -1,5 +1,4 @@
 import 'package:clean_architecture_tdd_solid/domain/entities/survey_result_entity.dart';
-import 'package:clean_architecture_tdd_solid/domain/entities/surveys_answer_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/load_survey_result.dart';
 import 'package:clean_architecture_tdd_solid/domain/usecases/save_survey_result.dart';
@@ -10,6 +9,8 @@ import 'package:clean_architecture_tdd_solid/ui/pages/survey_result/survey_resul
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../mocks/fake_survey_result_factory.dart';
 
 class LoadSurveyResultSpy extends Mock implements LoadSurveyResult {}
 
@@ -23,24 +24,6 @@ void main() {
   late SurveyResultEntity saveResult;
   late String surveyId;
   late String answer;
-
-  SurveyResultEntity mockValidData() => SurveyResultEntity(
-        surveyId: faker.guid.guid(),
-        question: faker.lorem.sentence(),
-        answers: [
-          SurveyAnswerEntity(
-            image: faker.internet.httpUrl(),
-            answer: faker.lorem.sentence(),
-            isCurrentAnswer: faker.randomGenerator.boolean(),
-            percent: faker.randomGenerator.integer(100),
-          ),
-          SurveyAnswerEntity(
-            answer: faker.lorem.sentence(),
-            isCurrentAnswer: faker.randomGenerator.boolean(),
-            percent: faker.randomGenerator.integer(100),
-          ),
-        ],
-      );
 
   When mockLoadSurveyResultCall() => when(() => loadSurveyResult.loadBySurvey(surveyId: any(named: 'surveyId')));
 
@@ -100,8 +83,8 @@ void main() {
       surveyId: surveyId,
     );
 
-    mockLoadSurveyResult(mockValidData());
-    mockSaveSurveyResult(mockValidData());
+    mockLoadSurveyResult(FakeSurveyResultFactory.makeEntity());
+    mockSaveSurveyResult(FakeSurveyResultFactory.makeEntity());
   });
 
   group("loadData", () {

@@ -22,7 +22,7 @@ class LocalSurveyModel {
       id: json['id'],
       question: json['question'],
       date: DateTime.parse(json['date']),
-      didAnswer: bool.fromEnvironment(json['didAnswer'], defaultValue: false),
+      didAnswer: json['didAnswer'].toString().toLowerCase() == "true",
     );
   }
 
@@ -30,7 +30,7 @@ class LocalSurveyModel {
     return LocalSurveyModel(
       id: entity.id,
       question: entity.question,
-      date: entity.datetime,
+      date: entity.dateTime,
       didAnswer: entity.didAnswer,
     );
   }
@@ -38,7 +38,7 @@ class LocalSurveyModel {
   SurveyEntity toEntity() => SurveyEntity(
         id: id,
         question: question,
-        datetime: date,
+        dateTime: date,
         didAnswer: didAnswer,
       );
 

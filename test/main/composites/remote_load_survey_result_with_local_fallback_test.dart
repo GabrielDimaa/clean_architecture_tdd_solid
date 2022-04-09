@@ -1,12 +1,13 @@
 import 'package:clean_architecture_tdd_solid/data/usecases/load_survey_result/local_load_survey_result.dart';
 import 'package:clean_architecture_tdd_solid/data/usecases/load_survey_result/remote_load_survey_result.dart';
 import 'package:clean_architecture_tdd_solid/domain/entities/survey_result_entity.dart';
-import 'package:clean_architecture_tdd_solid/domain/entities/surveys_answer_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/main/composites/remote_load_survey_result_with_local_fallback.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../mocks/fake_survey_result_factory.dart';
 
 class RemoteLoadSurveyResultSpy extends Mock implements RemoteLoadSurveyResult {}
 
@@ -20,39 +21,17 @@ void main() {
   late SurveyResultEntity remoteSurveyResult;
   late SurveyResultEntity localSurveyResult;
 
-  void mockRemoteSurveyResult() {
-    remoteSurveyResult = SurveyResultEntity(
-      surveyId: faker.guid.guid(),
-      question: faker.lorem.sentence(),
-      answers: [
-        SurveyAnswerEntity(
-          answer: faker.lorem.sentence(),
-          isCurrentAnswer: faker.randomGenerator.boolean(),
-          percent: faker.randomGenerator.integer(100),
-        ),
-      ],
-    );
-  }
+  void mockRemoteSurveyResult() => remoteSurveyResult = FakeSurveyResultFactory.makeEntity();
 
-  void mockLocalSurveyResult() {
-    localSurveyResult = SurveyResultEntity(
-      surveyId: faker.guid.guid(),
-      question: faker.lorem.sentence(),
-      answers: [
-        SurveyAnswerEntity(
-          answer: faker.lorem.sentence(),
-          isCurrentAnswer: faker.randomGenerator.boolean(),
-          percent: faker.randomGenerator.integer(100),
-        ),
-      ],
-    );
-  }
+  void mockLocalSurveyResult() => localSurveyResult = FakeSurveyResultFactory.makeEntity();
 
   When mockRemoteLoadBySurveyCall() => when(() => remote.loadBySurvey(surveyId: any(named: 'surveyId')));
-  
+
   When mockLocalLoadBySurveyCall() => when(() => local.loadBySurvey(surveyId: any(named: 'surveyId')));
 
   When mockLocalValidateCall() => when(() => local.validate(any()));
+
+  When mockLocalSaveCall() => when(() => local.save(remoteSurveyResult));
 
   void mockRemoteLoadBySurvey() => mockRemoteLoadBySurveyCall().thenAnswer((_) => Future.value(remoteSurveyResult));
 
@@ -63,6 +42,8 @@ void main() {
   void mockLoadLoadBySurveyError() => mockLocalLoadBySurveyCall().thenThrow(DomainError.unexpected);
 
   void mockLocalValidate() => mockLocalValidateCall().thenAnswer((_) => Future.value());
+
+  void mockLocalSave() => mockLocalSaveCall().thenAnswer((_) => Future.value());
 
   setUp(() {
     remote = RemoteLoadSurveyResultSpy();
@@ -76,6 +57,7 @@ void main() {
     mockRemoteLoadBySurvey();
     mockLocalLoadBySurvey();
     mockLocalValidate();
+    mockLocalSave();
   });
 
   test("Deve chamar remote LoadBySurvey", () async {
@@ -118,7 +100,7 @@ void main() {
 
     final SurveyResultEntity response = await sut.loadBySurvey(surveyId: surveyId);
 
-    expect(response, remoteSurveyResult);
+    expect(response, localSurveyResult);
   });
 
   test("Deve throw UnexpectedError se local load falhar", () {

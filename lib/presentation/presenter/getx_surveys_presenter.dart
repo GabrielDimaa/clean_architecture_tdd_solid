@@ -27,7 +27,7 @@ class GetxSurveysPresenter extends GetxController with SessionManager, LoadingMa
           .map((e) => SurveyViewModel(
         id: e.id,
         question: e.question,
-        date: DateFormat('dd MMM yyyy').format(e.datetime),
+        date: DateFormat('dd MMM yyyy').format(e.dateTime),
         didAnswer: e.didAnswer,
       ))
           .toList();

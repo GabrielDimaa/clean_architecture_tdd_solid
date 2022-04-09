@@ -6,6 +6,8 @@ import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../mocks/fake_surveys_factory.dart';
+
 class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
@@ -13,21 +15,6 @@ void main() {
   late HttpClientSpy httpClient;
   late String url;
   late List<Map> list;
-
-  List<Map> mockValidData() => [
-        {
-          'id': faker.guid.guid(),
-          'question': faker.randomGenerator.string(50),
-          'didAnswer': faker.randomGenerator.boolean(),
-          'date': faker.date.dateTime().toIso8601String(),
-        },
-        {
-          'id': faker.guid.guid(),
-          'question': faker.randomGenerator.string(50),
-          'didAnswer': faker.randomGenerator.boolean(),
-          'date': faker.date.dateTime().toIso8601String(),
-        },
-      ];
 
   When mockRequest() => when(() => httpClient.request(url: any(named: 'url'), method: any(named: 'method')));
 
@@ -45,7 +32,7 @@ void main() {
     url = faker.internet.httpUrl();
     sut = RemoteLoadSurveys(url: url, httpClient: httpClient);
 
-    mockHttpData(mockValidData());
+    mockHttpData(FakeSurveysFactory.makeApiJson());
   });
 
   test("Deve chamar HttpClient com valores corretos", () async {
@@ -61,22 +48,20 @@ void main() {
       SurveyEntity(
         id: list[0]['id'],
         question: list[0]['question'],
-        datetime: DateTime.parse(list[0]['date']),
+        dateTime: DateTime.parse(list[0]['date']),
         didAnswer: list[0]['didAnswer'],
       ),
       SurveyEntity(
         id: list[1]['id'],
         question: list[1]['question'],
-        datetime: DateTime.parse(list[1]['date']),
+        dateTime: DateTime.parse(list[1]['date']),
         didAnswer: list[1]['didAnswer'],
       ),
     ]);
   });
 
   test("Deve throw UnexpectedError se HttpClient retornar 200 com dados inválidos", () {
-    mockHttpData([
-      {'invalid_key': 'invalid_value'}
-    ]);
+    mockHttpData(FakeSurveysFactory.makeInvalidApiJson());
 
     final future = sut.load();
 

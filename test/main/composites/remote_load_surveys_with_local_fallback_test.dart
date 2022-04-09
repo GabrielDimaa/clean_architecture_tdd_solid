@@ -3,9 +3,10 @@ import 'package:clean_architecture_tdd_solid/data/usecases/load_surveys/remote_l
 import 'package:clean_architecture_tdd_solid/domain/entities/survey_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
 import 'package:clean_architecture_tdd_solid/main/composites/remote_load_surveys_with_local_fallback.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../mocks/fake_surveys_factory.dart';
 
 class RemoteLoadSurveysSpy extends Mock implements RemoteLoadSurveys {}
 
@@ -38,9 +39,7 @@ void main() {
 
   void mockLocalValidate() => mockLocalValidateCall().thenAnswer((_) => Future.value());
 
-  List<SurveyEntity> mockSurveys() => [
-    SurveyEntity(id: faker.guid.guid(), question: faker.randomGenerator.string(10), datetime: faker.date.dateTime(), didAnswer: faker.randomGenerator.boolean()),
-  ];
+  List<SurveyEntity> mockSurveys() => FakeSurveysFactory.makeEntities();
 
   setUp(() {
     remote = RemoteLoadSurveysSpy();

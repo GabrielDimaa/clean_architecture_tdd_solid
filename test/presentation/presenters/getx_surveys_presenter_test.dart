@@ -4,20 +4,16 @@ import 'package:clean_architecture_tdd_solid/domain/usecases/load_surveys.dart';
 import 'package:clean_architecture_tdd_solid/presentation/presenter/getx_surveys_presenter.dart';
 import 'package:clean_architecture_tdd_solid/ui/helpers/errors/ui_error.dart';
 import 'package:clean_architecture_tdd_solid/ui/pages/surveys/survey_view_model.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../mocks/fake_surveys_factory.dart';
 
 class LoadSurveysSpy extends Mock implements LoadSurveys {}
 
 void main() {
   late GetxSurveysPresenter sut;
   late LoadSurveysSpy loadSurveys;
-
-  List<SurveyEntity> mockValidData() => [
-        SurveyEntity(id: faker.guid.guid(), question: faker.lorem.sentence(), datetime: DateTime(2020, 2, 2), didAnswer: true),
-        SurveyEntity(id: faker.guid.guid(), question: faker.lorem.sentence(), datetime: DateTime(2018, 12, 20), didAnswer: false),
-      ];
 
   When mockLoadSurveysCall() => when(() => loadSurveys.load());
 
@@ -37,7 +33,7 @@ void main() {
     loadSurveys = LoadSurveysSpy();
     sut = GetxSurveysPresenter(loadSurveys: loadSurveys);
 
-    mockLoadSurveys(mockValidData());
+    mockLoadSurveys(FakeSurveysFactory.makeEntities());
   });
 
   test("Deve chamar LoadSurveys on loadData", () async {

@@ -10,6 +10,8 @@ import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../mocks/fake_account_factory.dart';
+
 class ValidationSpy extends Mock implements Validation {}
 
 class AuthenticationSpy extends Mock implements Authentication {}
@@ -23,19 +25,22 @@ void main() {
   late SaveCurrentAccount saveCurrentAccount;
   late String email;
   late String password;
-  late String token;
+  late AccountEntity account;
 
   When mockValidationCall({String? field}) => when(() => validation.validate(field ?? any(), any()));
 
   When mockAuthenticationCall({String? field}) => when(() => authentication.auth(AuthenticationParams(email: email, password: password)));
 
-  When mockSaveCurrentAccountCall() => when(() => saveCurrentAccount.save(AccountEntity(token)));
+  When mockSaveCurrentAccountCall() => when(() => saveCurrentAccount.save(account));
 
   void mockValidation({String? field, String? value}) => mockValidationCall(field: field).thenReturn(value);
 
   void mockValidationError({String? field, required ValidationError value}) => mockValidationCall(field: field).thenReturn(value);
 
-  void mockAuthentication() => mockAuthenticationCall().thenAnswer((_) async => AccountEntity(token));
+  void mockAuthentication(AccountEntity data) {
+    account = data;
+    mockAuthenticationCall().thenAnswer((_) async => data);
+  }
 
   void mockAuthenticationError(DomainError error) => mockAuthenticationCall().thenThrow(error);
 
@@ -50,10 +55,9 @@ void main() {
     sut = GetxLoginPresenter(validation: validation, authentication: authentication, saveCurrentAccount: saveCurrentAccount);
     email = faker.internet.email();
     password = faker.internet.password();
-    token = faker.guid.guid();
 
     mockValidation();
-    mockAuthentication();
+    mockAuthentication(FakeAccountFactory.makeEntity());
     mockSaveCurrentAccount();
   });
 
@@ -140,7 +144,7 @@ void main() {
   });
 
   test("Deve chamar authentication com valores corretos", () async {
-    when(() => saveCurrentAccount.save(AccountEntity(token))).thenAnswer((_) => Future.value());
+    when(() => saveCurrentAccount.save(account)).thenAnswer((_) => Future.value());
 
     sut.validateEmail(email);
     sut.validatePassword(password);
@@ -163,14 +167,14 @@ void main() {
   });
 
   test("Deve chamar SaveCurrentAccount com valores corretos", () async {
-    when(() => saveCurrentAccount.save(AccountEntity(token))).thenAnswer((_) => Future.value());
+    when(() => saveCurrentAccount.save(account)).thenAnswer((_) => Future.value());
 
     sut.validateEmail(email);
     sut.validatePassword(password);
 
     await sut.auth();
 
-    verify(() => saveCurrentAccount.save(AccountEntity(token))).called(1);
+    verify(() => saveCurrentAccount.save(account)).called(1);
   });
 
   test("Deve emitir evento correto quando sucesso na authentication", () async {

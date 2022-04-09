@@ -9,6 +9,8 @@ import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../mocks/fake_account_factory.dart';
+
 class ValidationSpy extends Mock implements Validation {}
 
 class AddAccountSpy extends Mock implements AddAccount {}
@@ -24,7 +26,7 @@ void main() {
   late String email;
   late String password;
   late String passwordConfirmation;
-  late String token;
+  late AccountEntity account;
 
   When mockValidationCall({String? field}) => when(() => validation.validate(field ?? any(), any()));
 
@@ -35,13 +37,16 @@ void main() {
         passwordConfirmation: passwordConfirmation,
       )));
 
-  When mockSaveCurrentAccountCall() => when(() => saveCurrentAccount.save(AccountEntity(token)));
+  When mockSaveCurrentAccountCall() => when(() => saveCurrentAccount.save(account));
 
   void mockValidation({String? field, String? value}) => mockValidationCall(field: field).thenReturn(value);
 
   void mockValidationError({String? field, required ValidationError value}) => mockValidationCall(field: field).thenReturn(value);
 
-  void mockAddAccount() => mockAddAccountCall().thenAnswer((_) async => AccountEntity(token));
+  void mockAddAccount(AccountEntity data) {
+    account = data;
+    mockAddAccountCall().thenAnswer((_) async => data);
+  }
 
   void mockAddAccountError(DomainError error) => mockAddAccountCall().thenThrow(error);
 
@@ -58,10 +63,9 @@ void main() {
     email = faker.internet.email();
     password = faker.internet.password();
     passwordConfirmation = faker.internet.password();
-    token = faker.guid.guid();
 
     mockValidation();
-    mockAddAccount();
+    mockAddAccount(FakeAccountFactory.makeEntity());
     mockSaveCurrentAccount();
   });
 
@@ -262,7 +266,7 @@ void main() {
 
     await sut.signUp();
 
-    verify(() => saveCurrentAccount.save(AccountEntity(token))).called(1);
+    verify(() => saveCurrentAccount.save(account)).called(1);
   });
 
   test('Should emitir UnexpectedError se SaveCurrentAccount falhar', () async {
