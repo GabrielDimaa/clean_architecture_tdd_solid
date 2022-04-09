@@ -45,7 +45,7 @@ class LoginPage extends StatelessWidget with LoadingManager, UIErrorManager, Nav
                           ),
                           const LoginButton(),
                           TextButton.icon(
-                            onPressed: () {},
+                            onPressed: presenter.goToSignUp,
                             icon: const Icon(Icons.person),
                             label: Text(R.string.addAccount),
                           ),
