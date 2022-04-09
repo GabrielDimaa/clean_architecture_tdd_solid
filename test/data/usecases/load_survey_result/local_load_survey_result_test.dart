@@ -1,6 +1,5 @@
 import 'package:clean_architecture_tdd_solid/data/cache/fetch_cache_storage.dart';
 import 'package:clean_architecture_tdd_solid/data/usecases/load_survey_result/local_load_survey_result.dart';
-import 'package:clean_architecture_tdd_solid/domain/entities/survey_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/entities/survey_result_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/entities/surveys_answer_entity.dart';
 import 'package:clean_architecture_tdd_solid/domain/helpers/domain_error.dart';
@@ -227,7 +226,6 @@ void main() {
     late CacheStorageSpy cacheStorage;
     late LocalLoadSurveyResult sut;
     late SurveyResultEntity surveyResult;
-    late String surveyId;
 
     SurveyResultEntity mockSurveyResult() => SurveyResultEntity(
           surveyId: faker.guid.guid(),
@@ -260,7 +258,6 @@ void main() {
     setUp(() {
       cacheStorage = CacheStorageSpy();
       sut = LocalLoadSurveyResult(cacheStorage: cacheStorage);
-      surveyId = faker.guid.guid();
 
       surveyResult = mockSurveyResult();
       mockSave();

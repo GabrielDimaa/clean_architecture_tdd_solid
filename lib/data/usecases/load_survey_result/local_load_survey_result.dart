@@ -37,7 +37,6 @@ class LocalLoadSurveyResult implements LoadSurveyResult {
   Future<void> save(SurveyResultEntity surveyResult) async {
     try {
       final json = LocalSurveyResultModel.fromEntity(surveyResult).toJson();
-      print(json);
       await cacheStorage.save(key: 'survey_result/${surveyResult.surveyId}', value: json);
     } catch (e) {
       throw DomainError.unexpected;
