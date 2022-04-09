@@ -298,6 +298,167 @@ void main() {
     });
   });
 
+  group("put", () {
+    When mockRequest() {
+      return when(() {
+        return client.put(any(), headers: any(named: "headers"), body: any(named: "body"));
+      });
+    }
+
+    void mockResponse(int statusCode, {String body = '{"any_key":"any_value"}'}) {
+      mockRequest().thenAnswer((_) async => Response(body, statusCode));
+    }
+
+    void mockError() {
+      mockRequest().thenThrow(Exception());
+    }
+
+    setUp(() => mockResponse(200));
+
+    test("Deve chamar put com valores corretos", () async {
+      await sut.request(url: url, method: "put", body: {'any_key': 'any_value'});
+
+      verify(() => client.put(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+        },
+        body: '{"any_key":"any_value"}',
+      ));
+
+      await sut.request(url: url, method: "put", body: {'any_key': 'any_value'}, headers: {'any_header': 'any_value'});
+
+      verify(() => client.put(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+          'any_header': 'any_value',
+        },
+        body: '{"any_key":"any_value"}',
+      ));
+    });
+
+    test("Deve retornar data se o put for 200", () async {
+      final Map? response = await sut.request(url: url, method: "put");
+
+      expect(response, {'any_key': 'any_value'});
+    });
+
+    test("Deve retornar null se o put for 200 sem data", () async {
+      mockResponse(200, body: "");
+
+      final Map? response = await sut.request(url: url, method: "put");
+
+      expect(response, null);
+    });
+
+    test("Deve retornar null se o put for 204 e data vazio", () async {
+      mockResponse(204, body: "");
+
+      final Map? response = await sut.request(url: url, method: "put");
+
+      expect(response, null);
+    });
+
+    test("Deve retornar null se o put for 204 e com data", () async {
+      mockResponse(204);
+
+      final Map? response = await sut.request(url: url, method: "put");
+
+      expect(response, null);
+    });
+
+    test("Deve retornar BadRequestError se o put for 400", () async {
+      mockResponse(400);
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
+    test("Deve retornar BadRequestError se o put for 400", () async {
+      mockResponse(400, body: "");
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
+    test("Deve retornar ServerError se o put for 500", () async {
+      mockResponse(500);
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.serverError));
+    });
+
+    test("Deve retornar ServerError se o put for 500", () async {
+      mockResponse(500, body: "");
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.serverError));
+    });
+
+    test("Deve retornar UnauthorizedError se o put for 401", () async {
+      mockResponse(401);
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.unauthorized));
+    });
+
+    test("Deve retornar UnauthorizedError se o put for 401", () async {
+      mockResponse(401, body: "");
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.unauthorized));
+    });
+
+    test("Deve retornar ForbiddenError se o put for 403", () async {
+      mockResponse(403);
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.forbidden));
+    });
+
+    test("Deve retornar ForbiddenError se o put for 403", () async {
+      mockResponse(403, body: "");
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.forbidden));
+    });
+
+    test("Deve retornar NotFoundError se o put for 404", () async {
+      mockResponse(404);
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.notFound));
+    });
+
+    test("Deve retornar NotFoundError se o put for 404", () async {
+      mockResponse(404, body: "");
+
+      final future = sut.request(url: url, method: "put");
+
+      expect(future, throwsA(HttpError.notFound));
+    });
+
+    test("Deve retornar ServerError se o put throws", () async {
+      mockError();
+
+      final future = sut.request(url: url, method: "invalid method");
+
+      expect(future, throwsA(HttpError.serverError));
+    });
+  });
+
   group("shared", () {
     test("Deve retornar ServerError se o método é inválido", () async {
       final future = sut.request(url: url, method: "invalid method");

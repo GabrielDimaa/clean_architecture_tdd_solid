@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../ui/mixins/loading_manager.dart';
+import '../../../ui/mixins/navigation_manager.dart';
+import '../../../ui/mixins/session_manager.dart';
 import '../../components/reload_screen.dart';
 import '../../components/spinner_dialog.dart';
 import '../../helpers/i18n/resources.dart';
@@ -18,7 +21,7 @@ class SurveysPage extends StatefulWidget {
   _SurveysPageState createState() => _SurveysPageState();
 }
 
-class _SurveysPageState extends State<SurveysPage> {
+class _SurveysPageState extends State<SurveysPage> with LoadingManager, NavigationManager, SessionManager, RouteAware {
   @override
   void initState() {
     super.initState();
@@ -70,5 +73,18 @@ class _SurveysPageState extends State<SurveysPage> {
         },
       ),
     );
+  }
+
+  @override
+  void didPopNext() {
+    widget.presenter.loadData();
+  }
+
+  @override
+  void dispose() {
+    final RouteObserver<Route> routeObserver = Get.find<RouteObserver>();
+    routeObserver.unsubscribe(this);
+
+    super.dispose();
   }
 }

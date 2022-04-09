@@ -23,6 +23,9 @@ class HttpAdapter implements HttpClient {
         case "post":
           response = await client.post(Uri.parse(url), headers: defaultHeaders, body: bodyJson).timeout(const Duration(seconds: 10));
           break;
+        case "put":
+          response = await client.put(Uri.parse(url), headers: defaultHeaders, body: bodyJson).timeout(const Duration(seconds: 10));
+          break;
         case "get":
           response = await client.get(Uri.parse(url), headers: defaultHeaders).timeout(const Duration(seconds: 10));
           break;
